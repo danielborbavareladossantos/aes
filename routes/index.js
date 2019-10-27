@@ -1,9 +1,18 @@
-var express = require('express');
-var router = express.Router();
+//natives
+const express = require('express');
+const router = express.Router();
+
+//controllers
+const index_controller = require('../controllers/index');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', (req, res, next) => {
+  res.render('index', { title: 'Cript AES', result: '' });
+});
+
+/* POST enviar form. */
+router.post('/', (req, res, next) => {
+  index_controller.post(req, res, next);
 });
 
 module.exports = router;

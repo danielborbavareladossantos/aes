@@ -1,5 +1,29 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Criptografar
+
+        // register form
+        form(method='POST' action='/' enctype='multipart/form-data')
+          div.form-group
+            label(for='nome') Nome do arquivo:
+            input#nome.form-control(type='text', placeholder='Nome do arquivo' name='nome')
+          br
+          br
+          div.form-group
+            label(for='chave') Chave de cript:
+            input#chave.form-control(type='text', placeholder='chave' name='chave')
+          br
+          br
+          div.form-group
+            label(for='arquivo') Arquivo:
+            input#arquivo.form-control(type='file', placeholder='arquivo' name='arquivo')
+          br
+          br
+          button.btn.btn-primary(type='submit') Enviar
+          br
+          br
+          p= result
