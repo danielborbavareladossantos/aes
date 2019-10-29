@@ -168,6 +168,16 @@ const arrayToBi = (array,texto) => {
 
 }
 
+/*
+    Describe: Função privada que pega vetores e transforma em matriz 4x4.
+    Params:
+        -array: Vetor que deve ser quebrado a cada 4 posicoes.
+    Return: Retorna um array 4x4.
+*/
+// const arrayToBi = (array,texto) => {
+    
+// }
+
 module.exports = {
     post:post
 }
