@@ -71,7 +71,7 @@ const post = async (req, res, next) => {
         
         var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
 
-        var return_executarFour = await executarFour(return_geracaoChaves, arrayBiTextoSimples);
+        var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
         console.log(return_executarFour);
 
         var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour);
@@ -155,12 +155,38 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executarFour) =>
         });
     }
 
-    executarFour.forEach(element => {
-        // element.arka[0].forEach(y => {
-        //     str += y+" ";
-        // });
-        // str += "\n";
-        str += element.arka;
+    var i = 1;
+    str += "\n";
+    str += "****addRoundKey-Round "+i+"****";
+    str += "\n";
+
+    executarFour[0].forEach(x => {
+        x.forEach(y => {
+            str += y+" ";
+        });
+        str += "\n";
+    });
+
+    str += "\n";
+    str += "****SubBytes-Round "+i+"****";
+    str += "\n";
+
+    executarFour[1].forEach(x => {
+        x.forEach(y => {
+            str += y+" ";
+        });
+        str += "\n";
+    });
+
+    str += "\n";
+    str += "****ShiftRows-Round "+i+"****";
+    str += "\n";
+
+    executarFour[2].forEach(x => {
+        x.forEach(y => {
+            str += y+" ";
+        });
+        str += "\n";
     });
 
     return str;
@@ -475,53 +501,51 @@ const addRoundKey = (textoSimples, RoundKey0) => {
     Return: Retorna palavra.
 */
 const subBytes = (RoundKey) => {
-    return new Promise (function (resolve, reject) {
-        var array = [];
-        RoundKey.forEach(linha => {
-            var arrayL = [];
-            linha.forEach(element => {
-                var linha = null;
-                var coluna = null;
+    var array = [];
+    RoundKey.forEach(linha => {
+        var arrayL = [];
+        linha.forEach(element => {
+            var linha = null;
+            var coluna = null;
 
-                if (element[2].includes('a')) {
-                    linha = 10;
-                } else if (element[2].includes('b')) {
-                    linha = 11;
-                } else if (element[2].includes('c')) {
-                    linha = 12;
-                } else if (element[2].includes('d')) {
-                    linha = 13;
-                } else if (element[2].includes('e')) {
-                    linha = 14;
-                } else if (element[2].includes('f')) {
-                    linha = 15;
-                } else {
-                    linha = eval(element[2]);
-                }
+            if (element[2].includes('a')) {
+                linha = 10;
+            } else if (element[2].includes('b')) {
+                linha = 11;
+            } else if (element[2].includes('c')) {
+                linha = 12;
+            } else if (element[2].includes('d')) {
+                linha = 13;
+            } else if (element[2].includes('e')) {
+                linha = 14;
+            } else if (element[2].includes('f')) {
+                linha = 15;
+            } else {
+                linha = eval(element[2]);
+            }
 
-                if (element[3].includes('a')) {
-                    coluna = 10;
-                } else if (element[3].includes('b')) {
-                    coluna = 11;
-                } else if (element[3].includes('c')) {
-                    coluna = 12;
-                } else if (element[3].includes('d')) {
-                    coluna = 13;
-                } else if (element[3].includes('e')) {
-                    coluna = 14;
-                } else if (element[3].includes('f')) {
-                    coluna = 15;
-                } else {
-                    coluna = eval(element[3]);
-                }
+            if (element[3].includes('a')) {
+                coluna = 10;
+            } else if (element[3].includes('b')) {
+                coluna = 11;
+            } else if (element[3].includes('c')) {
+                coluna = 12;
+            } else if (element[3].includes('d')) {
+                coluna = 13;
+            } else if (element[3].includes('e')) {
+                coluna = 14;
+            } else if (element[3].includes('f')) {
+                coluna = 15;
+            } else {
+                coluna = eval(element[3]);
+            }
 
-                arrayL.push(utils.sbox[linha][coluna]);
-            });
-            array.push(arrayL);
+            arrayL.push(utils.sbox[linha][coluna]);
         });
-        
-        return resolve(array);
+        array.push(arrayL);
     });
+    
+    return array;
 }
 
 /*
@@ -532,29 +556,27 @@ const subBytes = (RoundKey) => {
     Return: Retorna palavra.
 */
 const shiftRows = (RoundKey) => {
-    return new Promise (function (resolve, reject) {
-        var array = [];
-        RoundKey.forEach(linha => {
-            array.push(linha);
-        });
-        
-        var rk1 = array[1].shift();
-        array[1].push(rk1);
-
-        var rk2_1 = array[2].shift();
-        var rk2_2 = array[2].shift();
-        array[2].push(rk2_1);
-        array[2].push(rk2_2);
-
-        var rk3_1 = array[3].shift();
-        var rk3_2 = array[3].shift();
-        var rk3_3 = array[3].shift();
-        array[3].push(rk3_1);
-        array[3].push(rk3_2);
-        array[3].push(rk3_3);
-
-        return resolve(array);
+    var array = [];
+    RoundKey.forEach(linha => {
+        array.push(linha);
     });
+    
+    var rk1 = array[1].shift();
+    array[1].push(rk1);
+
+    var rk2_1 = array[2].shift();
+    var rk2_2 = array[2].shift();
+    array[2].push(rk2_1);
+    array[2].push(rk2_2);
+
+    var rk3_1 = array[3].shift();
+    var rk3_2 = array[3].shift();
+    var rk3_3 = array[3].shift();
+    array[3].push(rk3_1);
+    array[3].push(rk3_2);
+    array[3].push(rk3_3);
+
+    return array;
 }
 
 /*
@@ -832,54 +854,22 @@ const getHexE = (valor) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
-const executarFour = async (schuledKeys, textoSimples) => {
-    return new Promise (async (resolve, reject) => {
-        var arrayList = [];
-        var object = null;
-        for (let i = 0; i < 11; i++) {
-            object = {
-                arka: null,
-                sub: null, 
-                shift: null,
-                mix: null
-            }
+const executarFour = (schuledKeys, textoSimples) => {
+    var arrayList = [];
+    for (let i = 0; i < 11; i++) {
+        var return_addRoundKeyArray = addRoundKey(textoSimples, schuledKeys[i]);
+        arrayList.push(return_addRoundKeyArray);
+        
+        var return_subBytes = subBytes(return_addRoundKeyArray);
+        arrayList.push(return_subBytes);
 
-            var return_addRoundKeyArray = addRoundKey(textoSimples, schuledKeys[i]);
-            object = {
-                arka: JSON.stringify(return_addRoundKeyArray), 
-                sub: object.sub, 
-                shift: object.shift,
-                mix: object.mix
-            }
-            
-            var return_subBytes = await subBytes(return_addRoundKeyArray);
-            object = {
-                arka: object.arka, 
-                sub: JSON.stringify(return_subBytes), 
-                shift: object.shift,
-                mix: object.mix
-            }
+        var return_shiftRows = shiftRows(return_subBytes);
+        arrayList.push(return_shiftRows);
 
-            var return_shiftRows = await shiftRows(return_subBytes);
-            object = {
-                arka: object.arka, 
-                sub: object.sub, 
-                shift: JSON.stringify(return_shiftRows),
-                mix: object.mix
-            }
-
-            var return_mixColumnsTableL = mixColumnsTableL(return_shiftRows);
-            object = {
-                arka: object.arka, 
-                sub: object.sub, 
-                shift: object.shift,
-                mix: JSON.stringify(return_mixColumnsTableL)
-            }
-
-            arrayList.push(object);
-        }
-        return resolve(arrayList);
-    });
+        var return_mixColumnsTableL = mixColumnsTableL(return_shiftRows);
+        arrayList.push(return_mixColumnsTableL);
+    }
+    return arrayList;
 }
 
 function transpose(matrix) {
