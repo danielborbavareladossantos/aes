@@ -72,7 +72,7 @@ const post = async (req, res, next) => {
         var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
 
         var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
-        console.log(return_executarFour)
+        // console.log(return_executarFour)
 
         var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour);
         
@@ -213,6 +213,17 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) =>
         i++;
 
     }
+
+    str += "\n";
+    str += "****Texto cifrado****";
+    str += "\n";
+
+    executafourP[executafourP.length-1].forEach(x => {
+        x.forEach(y => {
+            str += y+" ";
+        });
+        str += "\n";
+    });
 
     return str;
 
@@ -756,28 +767,45 @@ const verificaValorUnico = (b) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
-const multiplicar = (x, y) => {
-    var termo1 = parseInt(getHex(x), 16);
-    var termo2 = parseInt(getHex(y), 16);
-    var result = termo1+termo2;
+// const multiplicar = (x, y) => {
+//     var termo1 = parseInt(getHex(x), 16);
+//     var termo2 = parseInt(getHex(y), 16);
+//     var result = termo1+termo2;
+//     if (
+//         termo1.toString(16).includes("0x00") || 
+//         termo1.toString(16).includes("0x0") ||
+//         termo2.toString(16).includes("0x00") || 
+//         termo2.toString(16).includes("0x0")
+//     )
+//         return 0x00;
+//     if (
+//         termo1.toString(16).includes("0x01") || 
+//         termo1.toString(16).includes("0x1")
+//     )
+//         return termo2;
+//     if (
+//         termo2.toString(16).includes("0x01") || 
+//         termo2.toString(16).includes("0x1")
+//     )
+//             return termo1;
+//     return result;
+// }
+const multiplicar = (termo1, termo2) => {
     if (
         termo1.toString(16).includes("0x00") || 
-        termo1.toString(16).includes("0x0") ||
-        termo2.toString(16).includes("0x00") || 
-        termo2.toString(16).includes("0x0")
+        termo2.toString(16).includes("0x00")
     )
         return 0x00;
     if (
-        termo1.toString(16).includes("0x01") || 
-        termo1.toString(16).includes("0x1")
+        termo1.toString(16).includes("0x01")
     )
-        return termo2;
+        return parseInt(getHex(termo2), 16);
     if (
-        termo2.toString(16).includes("0x01") || 
-        termo2.toString(16).includes("0x1")
+        termo2.toString(16).includes("0x01")
     )
-            return termo1;
-    return result;
+        return parseInt(getHex(termo1), 16);
+        
+    return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
 }
 
 /*
