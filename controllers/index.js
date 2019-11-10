@@ -155,12 +155,12 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) =>
         });
     }
 
-    var i = 0;
+    var i = 1;
     for (let x = 0; x < executafourP.length; x+=4) {
 
         if ((0+x) < executafourP.length) {
             str += "\n";
-            str += "****addRoundKey-Round "+i+"****";
+            str += "****addRoundKey-Round "+(i-1)+"****";
             str += "\n";
 
             executafourP[0+x].forEach(x => {
@@ -197,7 +197,7 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) =>
             });
         }
 
-        if ((3+x) < executafourP.length) {
+        if ((3+x) < executafourP.length && i != 10) {
             str += "\n";
             str += "****MixedColumns-Round "+i+"****";
             str += "\n";
@@ -889,7 +889,7 @@ const executarFour = (schuledKeys, textoSimples) => {
     return_addRoundKeyArray = addRoundKey(textoSimples, schuledKeys[0]);
     arrayList.push(return_addRoundKeyArray);
     
-    for (let i = 1; i < 10; i++) {
+    for (let i = 1; i < 11; i++) {
         
         return_subBytes = subBytes(return_addRoundKeyArray);
         arrayList.push(return_subBytes);
