@@ -72,7 +72,7 @@ const post = async (req, res, next) => {
         var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
 
         var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
-        console.log(return_executarFour);
+        console.log(return_executarFour)
 
         var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour);
         
@@ -115,7 +115,7 @@ const lerFile = (filePath) => {
         -arrayKey: Array de chave original.
     Return: Retorna uma string, um texto esperado.
 */
-const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executarFour) => {
+const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) => {
 
     var str = "";
 
@@ -155,39 +155,64 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executarFour) =>
         });
     }
 
-    var i = 1;
-    str += "\n";
-    str += "****addRoundKey-Round "+i+"****";
-    str += "\n";
+    var i = 0;
+    for (let x = 0; x < executafourP.length; x+=4) {
 
-    executarFour[0].forEach(x => {
-        x.forEach(y => {
-            str += y+" ";
-        });
-        str += "\n";
-    });
+        if ((0+x) < executafourP.length) {
+            str += "\n";
+            str += "****addRoundKey-Round "+i+"****";
+            str += "\n";
 
-    str += "\n";
-    str += "****SubBytes-Round "+i+"****";
-    str += "\n";
+            executafourP[0+x].forEach(x => {
+                x.forEach(y => {
+                    str += y+" ";
+                });
+                str += "\n";
+            });
+        }
 
-    executarFour[1].forEach(x => {
-        x.forEach(y => {
-            str += y+" ";
-        });
-        str += "\n";
-    });
+        if ((1+x) < executafourP.length) {
+            str += "\n";
+            str += "****SubBytes-Round "+i+"****";
+            str += "\n";
 
-    str += "\n";
-    str += "****ShiftRows-Round "+i+"****";
-    str += "\n";
+            executafourP[1+x].forEach(x => {
+                x.forEach(y => {
+                    str += y+" ";
+                });
+                str += "\n";
+            });
+        }
 
-    executarFour[2].forEach(x => {
-        x.forEach(y => {
-            str += y+" ";
-        });
-        str += "\n";
-    });
+        if ((2+x) < executafourP.length) {
+            str += "\n";
+            str += "****ShiftRows-Round "+i+"****";
+            str += "\n";
+
+            executafourP[2+x].forEach(x => {
+                x.forEach(y => {
+                    str += y+" ";
+                });
+                str += "\n";
+            });
+        }
+
+        if ((3+x) < executafourP.length) {
+            str += "\n";
+            str += "****MixedColumns-Round "+i+"****";
+            str += "\n";
+
+            executafourP[3+x].forEach(x => {
+                x.forEach(y => {
+                    str += y+" ";
+                });
+                str += "\n";
+            });
+        }
+        
+        i++;
+
+    }
 
     return str;
 
@@ -500,9 +525,9 @@ const addRoundKey = (textoSimples, RoundKey0) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
-const subBytes = (RoundKey) => {
-    var array = [];
-    RoundKey.forEach(linha => {
+const subBytes = (RoundKeySB) => {
+    var arraySB = [];
+    RoundKeySB.forEach(linha => {
         var arrayL = [];
         linha.forEach(element => {
             var linha = null;
@@ -542,10 +567,10 @@ const subBytes = (RoundKey) => {
 
             arrayL.push(utils.sbox[linha][coluna]);
         });
-        array.push(arrayL);
+        arraySB.push(arrayL);
     });
     
-    return array;
+    return arraySB;
 }
 
 /*
@@ -555,28 +580,28 @@ const subBytes = (RoundKey) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
-const shiftRows = (RoundKey) => {
-    var array = [];
-    RoundKey.forEach(linha => {
-        array.push(linha);
+const shiftRows = (RoundKeySR) => {
+    var arraySR = [];
+    RoundKeySR.forEach(linha => {
+        arraySR.push(linha);
     });
     
-    var rk1 = array[1].shift();
-    array[1].push(rk1);
+    var rk1 = arraySR[1].shift();
+    arraySR[1].push(rk1);
 
-    var rk2_1 = array[2].shift();
-    var rk2_2 = array[2].shift();
-    array[2].push(rk2_1);
-    array[2].push(rk2_2);
+    var rk2_1 = arraySR[2].shift();
+    var rk2_2 = arraySR[2].shift();
+    arraySR[2].push(rk2_1);
+    arraySR[2].push(rk2_2);
 
-    var rk3_1 = array[3].shift();
-    var rk3_2 = array[3].shift();
-    var rk3_3 = array[3].shift();
-    array[3].push(rk3_1);
-    array[3].push(rk3_2);
-    array[3].push(rk3_3);
+    var rk3_1 = arraySR[3].shift();
+    var rk3_2 = arraySR[3].shift();
+    var rk3_3 = arraySR[3].shift();
+    arraySR[3].push(rk3_1);
+    arraySR[3].push(rk3_2);
+    arraySR[3].push(rk3_3);
 
-    return array;
+    return arraySR;
 }
 
 /*
@@ -856,18 +881,28 @@ const getHexE = (valor) => {
 */
 const executarFour = (schuledKeys, textoSimples) => {
     var arrayList = [];
-    for (let i = 0; i < 11; i++) {
-        var return_addRoundKeyArray = addRoundKey(textoSimples, schuledKeys[i]);
-        arrayList.push(return_addRoundKeyArray);
+    var return_addRoundKeyArray = null;
+    var return_subBytes = null;
+    var return_shiftRows = null;
+    var return_mixColumnsTableL = null;
+
+    return_addRoundKeyArray = addRoundKey(textoSimples, schuledKeys[0]);
+    arrayList.push(return_addRoundKeyArray);
+    
+    for (let i = 1; i < 10; i++) {
         
-        var return_subBytes = subBytes(return_addRoundKeyArray);
+        return_subBytes = subBytes(return_addRoundKeyArray);
         arrayList.push(return_subBytes);
 
-        var return_shiftRows = shiftRows(return_subBytes);
+        return_shiftRows = shiftRows(JSON.parse(JSON.stringify(return_subBytes)));
         arrayList.push(return_shiftRows);
 
-        var return_mixColumnsTableL = mixColumnsTableL(return_shiftRows);
+        return_mixColumnsTableL = mixColumnsTableL(return_shiftRows);
         arrayList.push(return_mixColumnsTableL);
+
+        return_addRoundKeyArray = addRoundKey(return_mixColumnsTableL, schuledKeys[i]);
+        arrayList.push(return_addRoundKeyArray);
+
     }
     return arrayList;
 }
