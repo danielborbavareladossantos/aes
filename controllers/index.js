@@ -74,7 +74,7 @@ const post = async (req, res, next) => {
         var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
         // console.log(return_executarFour)
 
-        var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour);
+        var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour, req.body.nome);
         
         //*****retorno*****
         res.render('index', { title: 'Result AES', result: result });
@@ -115,7 +115,7 @@ const lerFile = (filePath) => {
         -arrayKey: Array de chave original.
     Return: Retorna uma string, um texto esperado.
 */
-const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) => {
+const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP, v) => {
 
     var str = "";
 
@@ -223,6 +223,16 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) =>
             str += y+" ";
         });
         str += "\n";
+    });
+
+
+    fs.writeFile(v, str, function(err) {
+
+        if(err) {
+            return console.log(err);
+        }
+    
+        console.log("The file was saved!");
     });
 
     return str;
