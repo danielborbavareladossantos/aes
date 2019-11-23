@@ -632,7 +632,9 @@ const shiftRows = (RoundKeySR) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
+var imc = 0;
 const mixColumnsTableL = (shiftRows) => {
+
     //##############
     var b1 = 
     getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[0][0])))^
@@ -711,10 +713,10 @@ const mixColumnsTableL = (shiftRows) => {
 
     //##############
     var b13 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+    ChecarZeroE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
+    ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
+    ChecarZeroE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+    ChecarZeroE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
 
     var b14 = 
     getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[1][0])))^
@@ -734,14 +736,109 @@ const mixColumnsTableL = (shiftRows) => {
     getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[3][2])))^
     getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[3][3])));
 
+    if (imc == 0) {
+        // b13 = 
+        // ChecarZero(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
+        // ChecarZero(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
+        // ChecarZero(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+        // ChecarZero(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+
+        console.log("resultado multi com tabela======")
+        console.log(getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))))
+        console.log("resultado multi======")
+        console.log(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc)))
+        console.log("valor1======")
+        console.log(shiftRows[3][3])
+        console.log("valor2======")
+        console.log(utils.multiplicacao[0][3])
+        console.log("======")
+
+        // console.log("getHexE(1)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("getHexE(2)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("getHexE(3)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("getHexE(4)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3],imc))));
+    }
+
+    if (imc == 3) {
+        // b13 = 
+        // getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc)))^
+        // 0x00^
+        // 0x2f^
+        // 0x39;
+
+        // b13 = 
+        // getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc)))^
+        // ChecarZero(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
+        // getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+        // getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+        // console.log("resultado multi com tabela======")
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1]))))
+        // console.log("resultado multi======")
+        // console.log(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))
+        // console.log("valor1======")
+        // console.log(shiftRows[3][3])
+        // console.log("valor2======")
+        // console.log(utils.multiplicacao[0][3])
+        // console.log("======")
+
+        // console.log("getHexE(1)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("getHexE(2)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("getHexE(3)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("getHexE(4)");
+        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3],imc))));
+        // console.log("retornoH(cc)");
+        // console.log(retornoH(cc));
+        // console.log("1============");
+        // console.log(shiftRows[2][3]);
+        // console.log(utils.multiplicacao[0][2]);
+        // console.log("2============");
+        // console.log(shiftRows[3][3]);
+        // console.log(utils.multiplicacao[0][3]);
+        // console.log("=============");
+        // console.log("m============");
+        // console.log("1============");
+        // console.log(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2]));
+        // console.log("2============");
+        // console.log(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3]));
+    }
+
     result =  [ 
         [retornoH(b1), retornoH(b5), retornoH(b9), retornoH(b13)], 
         [retornoH(b2), retornoH(b6), retornoH(b10), retornoH(b14)], 
         [retornoH(b3), retornoH(b7), retornoH(b11), retornoH(b15)], 
         [retornoH(b4), retornoH(b8), retornoH(b12), retornoH(b16)], 
     ];
+
+    imc++;
+
     
     return result;
+}
+
+/*
+    Describe: Função que faz a geração de chaves
+    Params:
+        -RoundKey0: Palavra
+        -primeiraPalavra: Palavra
+    Return: Retorna palavra.
+*/
+const ChecarZeroE = (v) => {
+    if (v == 0x00)
+        return "0x00";
+    return getHexE(v);
+}
+
+const ChecarZero = (v) => {
+    if (v == 0x00)
+        return "0x00";
+    return getHex(v);
 }
 
 /*
@@ -800,21 +897,36 @@ const verificaValorUnico = (b) => {
 //             return termo1;
 //     return result;
 // }
-const multiplicar = (termo1, termo2) => {
-    if (
-        termo1.toString(16).includes("0x00") || 
-        termo2.toString(16).includes("0x00")
-    )
-        return 0x00;
-    if (
-        termo1.toString(16).includes("0x01")
-    )
+var multiplicar = (termo1, termo2) => {
+    // if (
+    //     termo1.toString(16).includes("0x00") || 
+    //     termo2.toString(16).includes("0x00")
+    // )
+    //     return 0x00;
+    if (termo1 == 0x01)
         return parseInt(getHex(termo2), 16);
-    if (
-        termo2.toString(16).includes("0x01")
-    )
+    if (termo2 == 0x01)
         return parseInt(getHex(termo1), 16);
         
+    return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
+}
+
+var multiplicar = (termo1, termo2, i) => {
+    // if (i == 0) {
+    //     console.log("==========");
+    //     console.log("termo1");
+    //     console.log(termo1);
+    //     console.log("==========");
+    //     console.log("termo2");
+    //     console.log(termo2);
+    // }
+    if (termo1 == 0x00 || termo2 == 0x00)
+        return 0x00;
+    if (termo1 == 0x01)
+        return parseInt(getHex(termo2), 16);
+    if (termo2 == 0x01)
+        return parseInt(getHex(termo1), 16);
+    
     return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
 }
 
