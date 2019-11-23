@@ -72,7 +72,11 @@ const post = async (req, res, next) => {
         var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
 
         var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
-        // console.log(return_executarFour)
+
+        var return_XorRoundKey10ShiftRows = XorRoundKey10ShiftRows(return_geracaoChaves[return_geracaoChaves.length-1],return_executarFour[return_executarFour.length-3]);
+        
+        return_executarFour.pop();
+        return_executarFour.push(return_XorRoundKey10ShiftRows);
 
         var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour, req.body.nome);
         
@@ -459,6 +463,42 @@ const XorGeracaoChaves = (palavraRoundKeyAnterior, palavraRoundKeyAtual) => {
     return array;
 }
 
+/*
+    Describe: Função que faz xor da geração de chaves
+    Params:
+        -palavraRoundKeyAnterior: Palavra
+        -palavraRoundKeyAtual: Palavra
+    Return: Retorna palavra.
+*/
+const XorRoundKey10ShiftRows = (roundKey10, shiftRows) => {
+    var bloco = [];
+    var array1 = [];
+    array1.push(checkOneChar((parseInt(roundKey10[0][0], 16)^parseInt(shiftRows[0][0], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][1], 16)^parseInt(shiftRows[0][1], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][2], 16)^parseInt(shiftRows[0][2], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][3], 16)^parseInt(shiftRows[0][3], 16)).toString(16)));
+    bloco.push(array1);
+    var array2 = [];
+    array2.push(checkOneChar((parseInt(roundKey10[1][0], 16)^parseInt(shiftRows[1][0], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][1], 16)^parseInt(shiftRows[1][1], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][2], 16)^parseInt(shiftRows[1][2], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][3], 16)^parseInt(shiftRows[1][3], 16)).toString(16)));
+    bloco.push(array2);
+    var array3 = [];
+    array3.push(checkOneChar((parseInt(roundKey10[2][0], 16)^parseInt(shiftRows[2][0], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][1], 16)^parseInt(shiftRows[2][1], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][2], 16)^parseInt(shiftRows[2][2], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][3], 16)^parseInt(shiftRows[2][3], 16)).toString(16)));
+    bloco.push(array3);
+    var array4 = [];
+    array4.push(checkOneChar((parseInt(roundKey10[3][0], 16)^parseInt(shiftRows[3][0], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][1], 16)^parseInt(shiftRows[3][1], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][2], 16)^parseInt(shiftRows[3][2], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][3], 16)^parseInt(shiftRows[3][3], 16)).toString(16)));
+    bloco.push(array4);
+    return bloco;
+}
+
 const checkOneChar = (string) => {
     if (string.length == 1)
         return "0x0"+string;
@@ -763,14 +803,14 @@ const mixColumnsTableL = (shiftRows) => {
         // console.log(utils.multiplicacao[0][3])
         // console.log("======")
 
-        console.log("(1)");
-        console.log(((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
-        console.log("(2)");
-        console.log(((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
-        console.log("(3)");
-        console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
-        console.log("(4)");
-        console.log(((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
+        // console.log("(1)");
+        // console.log(((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("(2)");
+        // console.log(((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("(3)");
+        // console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("(4)");
+        // console.log(((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
 
         // console.log("=====");
 
