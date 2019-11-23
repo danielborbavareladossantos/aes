@@ -637,162 +637,178 @@ const mixColumnsTableL = (shiftRows) => {
 
     //##############
     var b1 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[0][3])));
 
     var b2 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[1][3])));
 
     var b3 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[2][3])));
 
     var b4 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[3][3])));
 
     //##############
 
     var b5 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[0][3])));
 
     var b6 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[1][3])));
 
     var b7 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[2][3])));
 
     var b8 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[3][3])));
 
     //##############
     var b9 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[0][3])));
 
     var b10 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[1][3])));
 
     var b11 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[2][3])));
 
     var b12 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[3][3])));
 
     //##############
     var b13 = 
-    ChecarZeroE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
-    ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
-    ChecarZeroE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
-    ChecarZeroE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
 
     var b14 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[1][3])));
 
     var b15 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[2][3])));
 
     var b16 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[3][3])));
 
     if (imc == 0) {
         // b13 = 
-        // ChecarZero(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
-        // ChecarZero(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
-        // ChecarZero(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
-        // ChecarZero(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+        // ChecarZeroE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
+        // ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
+        // ChecarZeroE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+        // ChecarZeroE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
 
-        console.log("resultado multi com tabela======")
-        console.log(getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))))
-        console.log("resultado multi======")
-        console.log(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc)))
-        console.log("valor1======")
-        console.log(shiftRows[3][3])
-        console.log("valor2======")
-        console.log(utils.multiplicacao[0][3])
-        console.log("======")
-
-        // console.log("getHexE(1)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
-        // console.log("getHexE(2)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
-        // console.log("getHexE(3)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
-        // console.log("getHexE(4)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3],imc))));
-    }
-
-    if (imc == 3) {
-        // b13 = 
-        // getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc)))^
-        // 0x00^
-        // 0x2f^
-        // 0x39;
-
-        // b13 = 
-        // getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc)))^
-        // ChecarZero(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
-        // getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
-        // getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+        // console.log("termo1=primeiro======")
+        // console.log(shiftRows[2][3]);
+        // console.log("termo2=primeiro======")
+        // console.log(utils.multiplicacao[0][2]);
+        // console.log("========================")
+        // console.log("termo1=segundo======")
+        // console.log(shiftRows[3][3]);
+        // console.log("termo2=segundo======")
+        // console.log(utils.multiplicacao[0][3]);
+        
         // console.log("resultado multi com tabela======")
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1]))))
+        // console.log((retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))))
         // console.log("resultado multi======")
-        // console.log(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))
+        // console.log(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc)))
         // console.log("valor1======")
         // console.log(shiftRows[3][3])
         // console.log("valor2======")
         // console.log(utils.multiplicacao[0][3])
         // console.log("======")
 
+        console.log("(1)");
+        console.log(((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        console.log("(2)");
+        console.log(((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        console.log("(3)");
+        console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        console.log("(4)");
+        console.log(((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
+
+        // console.log("=====");
+
+        // console.log("ChecarZeroE(1)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("ChecarZeroE(2)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("ChecarZeroE(3)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("ChecarZeroE(4)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
+    }
+
+    if (imc == 3) {
+        // b13 = 
+        // ((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc)))^
+        // 0x00^
+        // 0x2f^
+        // 0x39;
+
+        // console.log("resultado multi com tabela======")
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1]))))
+        // console.log("resultado multi======")
+        // console.log(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))
+        // console.log("valor1======")
+        // console.log(shiftRows[1][3])
+        // console.log("valor2======")
+        // console.log(utils.multiplicacao[0][1])
+        // console.log("======")
+
         // console.log("getHexE(1)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log(((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
         // console.log("getHexE(2)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log(((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
         // console.log("getHexE(3)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
         // console.log("getHexE(4)");
-        // console.log(getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3],imc))));
+        // console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][3],imc))));
         // console.log("retornoH(cc)");
         // console.log(retornoH(cc));
         // console.log("1============");
@@ -807,6 +823,26 @@ const mixColumnsTableL = (shiftRows) => {
         // console.log(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2]));
         // console.log("2============");
         // console.log(multiplicar(shiftRows[2][3],utils.multiplicacao[0][3]));
+
+        // console.log("getHexE(1)");
+        // console.log(((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("getHexE(2)");
+        // console.log(((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("getHexE(3)");
+        // console.log(((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("getHexE(4)");
+        // console.log(((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
+
+        // console.log("=====");
+
+        // console.log("ChecarZeroE(1)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0],imc))));
+        // console.log("ChecarZeroE(2)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1],imc))));
+        // console.log("ChecarZeroE(3)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2],imc))));
+        // console.log("ChecarZeroE(4)");
+        // console.log(ChecarZeroE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3],imc))));
     }
 
     result =  [ 
@@ -829,29 +865,15 @@ const mixColumnsTableL = (shiftRows) => {
         -primeiraPalavra: Palavra
     Return: Retorna palavra.
 */
-const ChecarZeroE = (v) => {
-    if (v == 0x00)
-        return "0x00";
-    return getHexE(v);
-}
-
-const ChecarZero = (v) => {
-    if (v == 0x00)
-        return "0x00";
-    return getHex(v);
-}
-
-/*
-    Describe: Função que faz a geração de chaves
-    Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
-*/
 const retornoH = (b) => {
     if (b.toString(16).length > 2)
         return verificaValorUnico(b-parseInt("0xff", 16));
     return verificaValorUnico(b);
+}
+const stringRetornoH = (b) => {
+    if (b.length > 2)
+        return verificaValorUnico(parseInt("0x"+b, 16)-parseInt("0xff", 16));
+    return stringVerificaValorUnico(b);
 }
 
 /*
@@ -865,6 +887,12 @@ const verificaValorUnico = (b) => {
     if (b.toString(16).length == 1)
         return "0x0"+b.toString(16);
     return "0x"+b.toString(16);
+}
+
+const stringVerificaValorUnico = (b) => {
+    if (b.length == 1)
+        return "0x0"+b;
+    return "0x"+b;
 }
 
 /*
@@ -898,17 +926,18 @@ const verificaValorUnico = (b) => {
 //     return result;
 // }
 var multiplicar = (termo1, termo2) => {
-    // if (
-    //     termo1.toString(16).includes("0x00") || 
-    //     termo2.toString(16).includes("0x00")
-    // )
-    //     return 0x00;
+    if (termo1 == 0x00 || termo2 == 0x00)
+        return 0x00;
     if (termo1 == 0x01)
-        return parseInt(getHex(termo2), 16);
+        return parseInt(termo2.toString(), 16);
     if (termo2 == 0x01)
-        return parseInt(getHex(termo1), 16);
+        return parseInt(termo1.toString(), 16);
         
-    return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
+    var c_1 = getHex(termo1.toString());
+    var c_2 = getHex(termo2.toString());
+    var getHexE_decimal = c_1+c_2;
+    var getHexE_hex = getHexE_decimal.toString(16);
+    return getHexE(stringRetornoH(getHexE_hex));
 }
 
 var multiplicar = (termo1, termo2, i) => {
@@ -923,11 +952,15 @@ var multiplicar = (termo1, termo2, i) => {
     if (termo1 == 0x00 || termo2 == 0x00)
         return 0x00;
     if (termo1 == 0x01)
-        return parseInt(getHex(termo2), 16);
+        return parseInt(termo2.toString(), 16);
     if (termo2 == 0x01)
-        return parseInt(getHex(termo1), 16);
+        return parseInt(termo1.toString(), 16);
     
-    return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
+    var c_1 = getHex(termo1.toString());
+    var c_2 = getHex(termo2.toString());
+    var getHexE_decimal = c_1+c_2;
+    var getHexE_hex = getHexE_decimal.toString(16);
+    return getHexE(stringRetornoH(getHexE_hex));
 }
 
 /*
@@ -973,7 +1006,7 @@ const getHex = (valor) => {
         coluna = eval(valor[3]);
     }
 
-    return utils.TabelaL[linha][coluna];
+    return eval(utils.TabelaL[linha][coluna]);
 }
 
 /*
@@ -1019,7 +1052,7 @@ const getHexE = (valor) => {
         coluna = eval(valor[3]);
     }
 
-    return utils.TabelaE[linha][coluna];
+    return parseInt(utils.TabelaE[linha][coluna], 16);
 }
 
 /*
