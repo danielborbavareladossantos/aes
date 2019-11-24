@@ -37,47 +37,58 @@ const post = async (req, res, next) => {
         //faz leitura do arquivo
         const texto = await lerFile(filePath);
 
+        //faz pcks#5
+        var pcks5 = getPKC5(texto);
+
+        //gera matriz apenas de resultados
+        var matrizTexto = getMatrizTexto(texto, pcks5);
+
         //declara vetor da chave e instancia chave em hexadecimal
         var arrayKey = null;
 
+        //permite usuario entrar com hexadecimal na chave
         if (req.body.chave.includes(","))
             arrayKey = req.body.chave.split(",");
         else
             arrayKey = Buffer.from(req.body.chave, 'utf8').toString('hex').match(/.{1,2}/g);
 
         //coloca vetor de chave em forma de matriz
-        var arrayBiChave = arrayToBi(arrayKey,req.body.chave);
+        var arrayBiChave = arrayToBi(arrayKey);
 
-        //transforma texto simples em hexadecimal
-        var arrayTextoSimples = Buffer.from(texto, 'utf8').toString('hex').match(/.{1,2}/g);
+        var matrizResults = [];
 
-        //coloca vetor de texto simples em forma de matriz
-        var arrayBiTextoSimples = arrayToBi(arrayTextoSimples,texto);
+        //percorre resultados e cria matriz
+        var str = "";
+        matrizTexto.forEach(element => {
+            var return_encriptAES = encriptAES(arrayBiChave, element);
+            str += retornoTexto(
+                        arrayBiChave, 
+                        return_encriptAES.arrayBiTextoSimples, 
+                        return_encriptAES.return_geracaoChaves, 
+                        return_encriptAES.return_executarFour
+                    );
+            matrizResults.push(return_encriptAES.return_executarFour[return_encriptAES.return_executarFour.length-1]);
+            str += "\n";
+        });
+
+        //pega retorno de matrizes e gera texto para print
+        var return_retornoTextoMatrizes = retornoTextoMatrizes(matrizResults);
+
+        //add no resultado final
+        str += "\n"+return_retornoTextoMatrizes;
+
+        //gera arquivo
+        fs.writeFile(req.body.nome, str, function(err) {
+
+            if(err) {
+                return console.log(err);
+            }
         
-        //faz rotacionamento de valores da palavra
-        var return_rotWord = rotWord(arrayBiChave);
-
-        //faz substituição dos valores dentro do s-box
-        var return_subWord = subWord(return_rotWord);
-
-        //faz roundContant com tabela fixa
-        var return_roundConstant = roundConstant(1);
-
-        //faz xor entre passo 3 e passo 4
-        var return_RoundConstantXorsubWord = RoundConstantXorsubWord(return_roundConstant,return_subWord);
-        
-        //faz xor entre passo 5 e roundKeyAnterior
-        var return_RKAXorRCXorSW = RKAXorRCXorSW(getFirstWordRoundKey(arrayBiChave),return_RoundConstantXorsubWord);
-        
-        var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
-
-        var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
-        // console.log(return_executarFour)
-
-        var result = retornoTexto(arrayBiChave, arrayBiTextoSimples, return_geracaoChaves, return_executarFour, req.body.nome);
+            console.log("The file was saved!");
+        });
         
         //*****retorno*****
-        res.render('index', { title: 'Result AES', result: result });
+        res.render('index', { title: 'Result AES', result: str });
 
     } catch (error) {
         var texto = "Não foi possível encriptar o texto, Erro: "+error.message;
@@ -85,6 +96,83 @@ const post = async (req, res, next) => {
     }
 
 };
+
+/*
+    Describe: Função que executa encripta texto com chave
+    Params:
+        -arrayBiChave: Vetor de chave a ser utilizada
+        -arrayTextoSimples: Vetor de texto a ser encriptado
+    Return: Retorna matriz fragmentada
+*/
+const encriptAES = (arrayBiChave, arrayTextoSimples) => {
+    //coloca vetor de texto simples em forma de matriz
+    var arrayBiTextoSimples = arrayToBi(arrayTextoSimples);
+
+    //faz rotacionamento de valores da palavra
+    var return_rotWord = rotWord(arrayBiChave);
+
+    //faz substituição dos valores dentro do s-box
+    var return_subWord = subWord(return_rotWord);
+
+    //faz roundContant com tabela fixa
+    var return_roundConstant = roundConstant(1);
+
+    //faz xor entre passo 3 e passo 4
+    var return_RoundConstantXorsubWord = RoundConstantXorsubWord(return_roundConstant,return_subWord);
+
+    //faz xor entre passo 5 e roundKeyAnterior
+    var return_RKAXorRCXorSW = RKAXorRCXorSW(getFirstWordRoundKey(arrayBiChave),return_RoundConstantXorsubWord);
+
+    //retorna matriz com x10 chaves
+    var return_geracaoChaves = geracaoChavesPai(arrayBiChave,return_RKAXorRCXorSW);
+
+    //retorna matriz com for de x10 com 4 matrizes (AddRoundKey,SubByte,ShiftRow,MixColumn)
+    var return_executarFour = executarFour(return_geracaoChaves, arrayBiTextoSimples);
+
+    //retorna matriz de ultima chave com ultimo shiftRows
+    var return_XorRoundKey10ShiftRows = XorRoundKey10ShiftRows(return_geracaoChaves[return_geracaoChaves.length-1],return_executarFour[return_executarFour.length-3]);
+
+    //baixa ultima addRoundKey
+    return_executarFour.pop();
+
+    //sobe xor de ultima chave com ultimo shiftRows
+    return_executarFour.push(return_XorRoundKey10ShiftRows);
+
+    //faz print de resultado na tela com todas matrizes
+    return {
+        arrayBiTextoSimples: arrayBiTextoSimples,
+        return_geracaoChaves: return_geracaoChaves,
+        return_executarFour: return_executarFour
+    };
+}
+
+/*
+    Describe: Função que separa em 16 caracteres e add na matriz
+    Params:
+        -texto: Texto a ser separado
+        -pkcs5: Numero de pkcs5
+    Return: Retorna matriz fragmentada
+*/
+const getMatrizTexto = (texto, pkcs5) => {
+    var matriz = [];
+    var arrayKey = Buffer.from(texto, 'utf8').toString('hex').match(/.{1,2}/g);
+    for (let i = 0; i < pkcs5; i++) {
+        arrayKey.push('00');
+    }
+
+    var count = 0;
+    var ma = [];
+    arrayKey.forEach(element => {
+        ma.push(element);
+        count++;
+        if (count == 16) {
+            matriz.push(ma);
+            ma = [];
+            count = 0;
+        }
+    });
+    return matriz;
+}
 
 /*
     Describe: Função privada que faz leitura do arquivo.
@@ -110,12 +198,29 @@ const lerFile = (filePath) => {
 }
 
 /*
+    Describe: Função que retorna texto da matriz
+    Params:
+        -matriz: Matriz de resultados
+    Return: Retorna uma string com valores de matriz organizados
+*/
+const retornoTextoMatrizes = (matriz) => {
+    var str = "";
+    matriz.forEach(x => {
+        x.forEach(y => {
+            str += y+" ";
+        });
+        str += "\n";
+    });
+    return str;
+}
+
+/*
     Describe: Função privada que pega arrays e valores e transforma em texto de retorno esperado.
     Params:
         -arrayKey: Array de chave original.
     Return: Retorna uma string, um texto esperado.
 */
-const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP, v) => {
+const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP) => {
 
     var str = "";
 
@@ -225,16 +330,6 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP, v)
         str += "\n";
     });
 
-
-    fs.writeFile(v, str, function(err) {
-
-        if(err) {
-            return console.log(err);
-        }
-    
-        console.log("The file was saved!");
-    });
-
     return str;
 
 }
@@ -245,11 +340,7 @@ const retornoTexto = (arrayKey, arrayTextoSimples, schuledKeys, executafourP, v)
         -array: Vetor que deve ser quebrado a cada 4 posicoes.
     Return: Retorna um array 4x4.
 */
-const arrayToBi = (array,texto) => {
-
-    //faz pck#5
-    //var pck5 = Buffer.from((((texto.length%4)-4)*-1).toString(), 'utf8').toString('hex');
-
+const arrayToBi = (array) => {
     var linhas = [];
     var vetor0 = [], vetor1 = [], vetor2 = [], vetor3 = [];
     var pos = 0;
@@ -276,6 +367,20 @@ const arrayToBi = (array,texto) => {
     
     return linhas;
 
+}
+
+/*
+    Describe: Função de pck5 para 
+    Params:
+        -texto: Texto para tirar o resto
+    Return: Retorna valor da pck5
+*/
+const getPKC5 = (texto) => {
+    var inside = 0;
+    while (inside>texto.length) {
+        inside+=16;
+    }
+    return (inside-texto.length)*-1;
 }
 
 /*
@@ -309,7 +414,7 @@ const getSecondWordRoundKey = (roundKey) => {
 }
 
 /*
-    Describe: Função que retorna a segunda palavra da RoundKey anterior.
+    Describe: Função que retorna a terceira palavra da RoundKey anterior.
     Params:
         -roundKey: Vetor que deve ser quebrado a cada 4 posicoes.
     Return: Retorna palavra.
@@ -459,6 +564,48 @@ const XorGeracaoChaves = (palavraRoundKeyAnterior, palavraRoundKeyAtual) => {
     return array;
 }
 
+/*
+    Describe: Função que faz xor da ultima chave com ultimo shiftRows
+    Params:
+        -roundKey10: Matriz da roundKey10
+        -shiftRows: Matriz da shiftRows
+    Return: Retorna matriz chave encriptada.
+*/
+const XorRoundKey10ShiftRows = (roundKey10, shiftRows) => {
+    var bloco = [];
+    var array1 = [];
+    array1.push(checkOneChar((parseInt(roundKey10[0][0], 16)^parseInt(shiftRows[0][0], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][1], 16)^parseInt(shiftRows[0][1], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][2], 16)^parseInt(shiftRows[0][2], 16)).toString(16)));
+    array1.push(checkOneChar((parseInt(roundKey10[0][3], 16)^parseInt(shiftRows[0][3], 16)).toString(16)));
+    bloco.push(array1);
+    var array2 = [];
+    array2.push(checkOneChar((parseInt(roundKey10[1][0], 16)^parseInt(shiftRows[1][0], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][1], 16)^parseInt(shiftRows[1][1], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][2], 16)^parseInt(shiftRows[1][2], 16)).toString(16)));
+    array2.push(checkOneChar((parseInt(roundKey10[1][3], 16)^parseInt(shiftRows[1][3], 16)).toString(16)));
+    bloco.push(array2);
+    var array3 = [];
+    array3.push(checkOneChar((parseInt(roundKey10[2][0], 16)^parseInt(shiftRows[2][0], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][1], 16)^parseInt(shiftRows[2][1], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][2], 16)^parseInt(shiftRows[2][2], 16)).toString(16)));
+    array3.push(checkOneChar((parseInt(roundKey10[2][3], 16)^parseInt(shiftRows[2][3], 16)).toString(16)));
+    bloco.push(array3);
+    var array4 = [];
+    array4.push(checkOneChar((parseInt(roundKey10[3][0], 16)^parseInt(shiftRows[3][0], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][1], 16)^parseInt(shiftRows[3][1], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][2], 16)^parseInt(shiftRows[3][2], 16)).toString(16)));
+    array4.push(checkOneChar((parseInt(roundKey10[3][3], 16)^parseInt(shiftRows[3][3], 16)).toString(16)));
+    bloco.push(array4);
+    return bloco;
+}
+
+/*
+    Describe: Função que verifica o hexadecimal tem apenas um numero
+    Params:
+        -string: hexadecimal sem 0x
+    Return: Retorna hexadecimal completo (com 0x) e do tamanho correto
+*/
 const checkOneChar = (string) => {
     if (string.length == 1)
         return "0x0"+string;
@@ -482,7 +629,7 @@ const geracaoChaves = (RoundKey0, primeiraPalavra) => {
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz a geração de chaves pai
     Params:
         -RoundKey0: Palavra
         -primeiraPalavra: Palavra
@@ -520,11 +667,11 @@ const geracaoChavesPai = (RoundKey0, primeiraPalavra) => {
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz xor entre texto simples e roundkey 0
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -textoSimples: Matriz de texto simples
+        -RoundKey0: Matriz da RoundKey0
+    Return: Retorna matriz da addRoundKey.
 */
 const addRoundKey = (textoSimples, RoundKey0) => {
     var total = [];
@@ -540,11 +687,10 @@ const addRoundKey = (textoSimples, RoundKey0) => {
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz substituicao na matriz RoundKeySB
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -RoundKeySB: Matriz
+    Return: Retorna Matriz.
 */
 const subBytes = (RoundKeySB) => {
     var arraySB = [];
@@ -595,11 +741,10 @@ const subBytes = (RoundKeySB) => {
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz troca na matriz RoundKeySR
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -RoundKeySR: Matriz
+    Return: Retorna Matriz.
 */
 const shiftRows = (RoundKeySR) => {
     var arraySR = [];
@@ -626,113 +771,113 @@ const shiftRows = (RoundKeySR) => {
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que constroi matriz mixColumns
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -shiftRows: Matriz de shiftRows
+    Return: Retorna matriz de mixColumns
 */
 const mixColumnsTableL = (shiftRows) => {
+
     //##############
     var b1 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[0][3])));
 
     var b2 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[1][3])));
 
     var b3 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[2][3])));
 
     var b4 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][0],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][0],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][0],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][0],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][0],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][0],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][0],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][0],utils.multiplicacao[3][3])));
 
     //##############
 
     var b5 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[0][3])));
 
     var b6 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[1][3])));
 
     var b7 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[2][3])));
 
     var b8 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][1],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][1],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][1],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][1],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][1],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][1],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][1],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][1],utils.multiplicacao[3][3])));
 
     //##############
     var b9 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[0][3])));
 
     var b10 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[1][3])));
 
     var b11 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[2][3])));
 
     var b12 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][2],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][2],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][2],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][2],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][2],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][2],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][2],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][2],utils.multiplicacao[3][3])));
 
     //##############
     var b13 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[0][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[0][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[0][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[0][3])));
 
     var b14 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[1][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[1][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[1][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[1][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[1][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[1][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[1][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[1][3])));
 
     var b15 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[2][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[2][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[2][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[2][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[2][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[2][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[2][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[2][3])));
 
     var b16 = 
-    getHexE(retornoH(multiplicar(shiftRows[0][3],utils.multiplicacao[3][0])))^
-    getHexE(retornoH(multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
-    getHexE(retornoH(multiplicar(shiftRows[2][3],utils.multiplicacao[3][2])))^
-    getHexE(retornoH(multiplicar(shiftRows[3][3],utils.multiplicacao[3][3])));
+    ((multiplicar(shiftRows[0][3],utils.multiplicacao[3][0])))^
+    ((multiplicar(shiftRows[1][3],utils.multiplicacao[3][1])))^
+    ((multiplicar(shiftRows[2][3],utils.multiplicacao[3][2])))^
+    ((multiplicar(shiftRows[3][3],utils.multiplicacao[3][3])));
 
     result =  [ 
         [retornoH(b1), retornoH(b5), retornoH(b9), retornoH(b13)], 
@@ -740,90 +885,85 @@ const mixColumnsTableL = (shiftRows) => {
         [retornoH(b3), retornoH(b7), retornoH(b11), retornoH(b15)], 
         [retornoH(b4), retornoH(b8), retornoH(b12), retornoH(b16)], 
     ];
-    
+
     return result;
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz verificação de hexadecimal maximo atravez de um hex
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -hex: hexadecimal
+    Return: Retorna hexadecimal filtrado em string
 */
-const retornoH = (b) => {
-    if (b.toString(16).length > 2)
-        return verificaValorUnico(b-parseInt("0xff", 16));
-    return verificaValorUnico(b);
+const retornoH = (hex) => {
+    if (hex.toString(16).length > 2)
+        return verificaValorUnico(hex-parseInt("0xff", 16));
+    return verificaValorUnico(hex);
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz verificação de hexadecimal maximo atravez de um hex string
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -hex: hexadecimal string
+    Return: Retorna hexadecimal filtrado em string
 */
-const verificaValorUnico = (b) => {
-    if (b.toString(16).length == 1)
-        return "0x0"+b.toString(16);
-    return "0x"+b.toString(16);
+const stringRetornoH = (hex) => {
+    if (hex.length > 2)
+        return verificaValorUnico(parseInt("0x"+hex, 16)-parseInt("0xff", 16));
+    return stringVerificaValorUnico(hex);
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que filtra se hexadecimal so tem 1 caracterer senao retorna zero a frente.
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -hex: Hexadecimal para ser filtrado
+    Return: Retorna hexadecimal filtrado
 */
-// const multiplicar = (x, y) => {
-//     var termo1 = parseInt(getHex(x), 16);
-//     var termo2 = parseInt(getHex(y), 16);
-//     var result = termo1+termo2;
-//     if (
-//         termo1.toString(16).includes("0x00") || 
-//         termo1.toString(16).includes("0x0") ||
-//         termo2.toString(16).includes("0x00") || 
-//         termo2.toString(16).includes("0x0")
-//     )
-//         return 0x00;
-//     if (
-//         termo1.toString(16).includes("0x01") || 
-//         termo1.toString(16).includes("0x1")
-//     )
-//         return termo2;
-//     if (
-//         termo2.toString(16).includes("0x01") || 
-//         termo2.toString(16).includes("0x1")
-//     )
-//             return termo1;
-//     return result;
-// }
+const verificaValorUnico = (hex) => {
+    if (hex.toString(16).length == 1)
+        return "0x0"+hex.toString(16);
+    return "0x"+hex.toString(16);
+}
+
+/*
+    Describe: Função que filtra se hexadecimal string so tem 1 caracterer senao retorna zero a frente.
+    Params:
+        -hex: Hexadecimal para ser filtrado
+    Return: Retorna hexadecimal filtrado
+*/
+const stringVerificaValorUnico = (hex) => {
+    if (hex.length == 1)
+        return "0x0"+hex;
+    return "0x"+hex;
+}
+
+/*
+    Describe: Função que faz multiplicação entre os termos
+    Params:
+        -termo1: Hexadecimal
+        -termo2: Hexadecimal
+    Return: Retorna hexadecimal multiplicado
+*/
 const multiplicar = (termo1, termo2) => {
-    if (
-        termo1.toString(16).includes("0x00") || 
-        termo2.toString(16).includes("0x00")
-    )
+    if (termo1 == 0x00 || termo2 == 0x00)
         return 0x00;
-    if (
-        termo1.toString(16).includes("0x01")
-    )
-        return parseInt(getHex(termo2), 16);
-    if (
-        termo2.toString(16).includes("0x01")
-    )
-        return parseInt(getHex(termo1), 16);
+    if (termo1 == 0x01)
+        return parseInt(termo2.toString(), 16);
+    if (termo2 == 0x01)
+        return parseInt(termo1.toString(), 16);
         
-    return parseInt(getHex(termo1), 16)+parseInt(getHex(termo2), 16);
+    var c_1 = getHex(termo1.toString());
+    var c_2 = getHex(termo2.toString());
+    var getHexE_decimal = c_1+c_2;
+    var getHexE_hex = getHexE_decimal.toString(16);
+    return getHexE(stringRetornoH(getHexE_hex));
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz verificacao na tabela L
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -valor: Hexadecimal
+    Return: Retorna hexadecimal atingido na tabela
 */
 const getHex = (valor) => {
     var linha = null;
@@ -861,15 +1001,14 @@ const getHex = (valor) => {
         coluna = eval(valor[3]);
     }
 
-    return utils.TabelaL[linha][coluna];
+    return eval(utils.TabelaL[linha][coluna]);
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função que faz verificacao na tabela E
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
-    Return: Retorna palavra.
+        -valor: Hexadecimal
+    Return: Retorna hexadecimal atingido na tabela
 */
 const getHexE = (valor) => {
     var linha = null;
@@ -907,14 +1046,14 @@ const getHexE = (valor) => {
         coluna = eval(valor[3]);
     }
 
-    return utils.TabelaE[linha][coluna];
+    return parseInt(utils.TabelaE[linha][coluna], 16);
 }
 
 /*
-    Describe: Função que faz a geração de chaves
+    Describe: Função monta matriz x10 de addRoundKey,SubByte,ShiftRows e mixColunms
     Params:
-        -RoundKey0: Palavra
-        -primeiraPalavra: Palavra
+        -schuledKeys: Matriz de schuledKeys
+        -textoSimples: Matriz de textoSimples
     Return: Retorna palavra.
 */
 const executarFour = (schuledKeys, textoSimples) => {
@@ -945,6 +1084,12 @@ const executarFour = (schuledKeys, textoSimples) => {
     return arrayList;
 }
 
+/*
+    Describe: Função de transposicao de matriz, inverte linhas por colunas
+    Params:
+        -matrix: Matriz a ser transferida
+    Return: Retorna matriz transferida
+*/
 function transpose(matrix) {
     return matrix[0].map((col, i) => matrix.map(row => row[i]));
 }
